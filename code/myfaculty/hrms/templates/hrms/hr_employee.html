@@ -1,0 +1,71 @@
+{% extends 'hrms/hr_page.html' %}
+{% load i18n %}
+{% load hrms_tags %}
+{% load core_tags %}
+{% block middle %}
+
+{% if messages %}
+{% for message in messages %}
+<div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+{% endfor %}
+{% endif %}
+
+<h3>
+    {% trans 'Στοιχεία Εργαζόμενου' %}
+</h3>
+<p>
+    {% trans 'Επώνυμο' %}: {{ employee.surname }}
+</p>
+<p>
+    {% trans 'Όνομα' %}: {{ employee.given_name }}
+</p>
+<p>
+    {% trans 'Email' %}: {{ employee.email }}
+</p>
+<br>
+<br>
+{% render_table payroll_table %}
+<br>
+<br>
+<div class="row">
+    <div class="col text-center">
+        <a href="{% url 'hrms:hr_update_employee' employee.pk %}?next={{ next }}" class="btn btn-success"> 
+            <span class="mto">contacts</span>
+            Πληροφορίες Εργαζόμενου</a>
+    </div>    
+</div>
+<br>
+<br>
+{% if experience %}
+<div class="row text-center justify-content-center">
+{% render_experience experience %}
+</div>
+
+<br>
+<br>
+{% endif %}
+{% render_wageclass wageclass %}
+<br><br>
+{% render_rankclass rankclass %}
+
+<br><br>
+{% render_table app_table %}
+<br>
+<div class="row text-center">
+    <div class="col text-center">
+    <a href="{% url 'hrms:hr_export_apps_emp' employee.pk %}" class="btn btn-success"> 
+        <span class="mto">download</span>
+        Εξαγωγή Συμβάσεων σε .xlsx</a>
+        <a href="{% url 'hrms:hr_upload_apps' employee.pk %}" class="btn btn-success"> 
+            <span class="mto">upload</span>
+            Εισαγωγή Συμβάσεων από .xlsx</a>
+        <a href="{% url 'hrms:hr_apps_template' %}" class="btn btn-success"> 
+            <span class="mto">description</span>
+            Template (.xlsx)</a>
+    </div>
+</div>
+<br>
+
+{% render_table dec_table %}
+
+{% endblock %}

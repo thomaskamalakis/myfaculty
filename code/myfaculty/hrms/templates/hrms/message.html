@@ -1,0 +1,8 @@
+{% extends 'hrms/hr_page.html' %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+{% block middle %}
+<div class="alert {{ alert_class|default:"alert-info" }}">
+  {% include html_message %}
+</div>
+{% endblock %}

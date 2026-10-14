@@ -1,0 +1,119 @@
+{% load static %}
+{% load profile_tags %}
+{% load i18n %}
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <title>{% block title %}Mydep{% endblock %}</title>
+    <link rel="icon" type="image/x-icon" href="{% static 'myprofile/dit.png' %}">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" language="javascript" src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap4.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;700&display=swap&subset=greek,latin" rel="stylesheet" />
+    <link  href="https://fonts.googleapis.com/css2?family=GFS+Didot&display=swap&subset=greek,latin" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="{% static 'myprofile/main.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.css">
+    <script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
+  </head>
+  <body>
+    {% block dev_warning %}
+     {% if request.is_dev_server %}
+     <div class="alert alert-danger dev-warning" role="alert">
+      <b>This is the development server.</b> Changes made here will not reflect the production system.
+     </div>
+     {% endif %}
+    {% endblock %}
+    {% block username %}
+    <nav class = "navbar navbar-expand-md justify-content-between">
+      <div class="userinfo">
+      {% if request.user.is_authenticated %}
+        <span class="mto">person</span>
+           {{ user.username }} 
+      </div>
+      {% endif %}
+     {% endblock %}
+     {% block navbar %}
+      <span class="navbar-text nav-link">    
+     {% if request.user.is_authenticated %}
+      <a class="nav-link-icon" href='{% url 'myprofile:index' %}'> <span class="mto">home</span> {% trans 'Κεντρική' %} </a>  
+      <a class="nav-link-icon" href='{% url 'myprofile:logout' %}'><span class="mto">logout</span> {% trans 'Έξοδος' %} </a>  
+     </span>
+     {% endif %}
+      <form action="{% url 'set_language' %}" method="post" class="form-inline d-flex align-items-center">
+      {% csrf_token %}
+      <input type="hidden" name="next" value="{{ request.get_full_path|slice:'3:' }}">
+      <button type="submit"
+              name="language"
+              value="en"
+              class="btn btn-link p-2 mr-2">
+        <img src="{% static 'myprofile/images/en.svg' %}"
+             alt="English" width="24">
+      </button>
+      <button type="submit"
+              name="language"
+              value="el"
+              class="btn btn-link p-2 mr-2">
+        <img src="{% static 'myprofile/images/gr.svg' %}"
+             alt="Greek" width="24">
+      </button>
+    </form>
+    </span>
+     {% endblock %}
+   </nav>
+    
+  <div class="container features">
+    {% block messages %}
+    {% if msg %}
+    <div class="alert alert-danger" role="alert">    
+    {{msg}}
+    </div>
+    {% endif %}
+    {% endblock %}
+    {% block submenu %}
+    {% endblock %}
+    {% block backurl %}
+    {% if backurl %}
+    <div class="row">
+    <div class="col">
+      <a href="{{ backurl }}" type="submit" class="btn btn-primary back-button"> <span class="mto">arrow_back_ios</span> {% trans 'Επιστροφή' %} </a> 
+    </div>
+    </div>    
+    {% endif %}
+    {% if back_url %}
+    <div class="row">
+    <div class="col">
+      <a href="{{ back_url }}" type="submit" class="btn btn-primary back-button"> <span class="mto">arrow_back_ios</span> {% trans 'Επιστροφή' %} </a> 
+    </div>
+    </div>    
+    {% endif %}
+    {% endblock %}
+    {% block upper %}
+    {% endblock %}
+    {% block middle %}
+    {% endblock %}
+    {% block bottom %}
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script>
+flatpickr('.datepicker', {
+    dateFormat: 'd/m/Y',   // internal value
+    altInput: true,
+    altFormat: 'd/m/Y'     // displayed value
+});
+  </script>
+    {% endblock %}    
+  </div>
+
+</body>
+</html>

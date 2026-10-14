@@ -1,0 +1,119 @@
+{% extends 'registration/base.html' %}
+{% load i18n %}
+{% load static %}
+{% block content %}
+
+{% if form.errors %}
+<div class="alert alert-danger">
+  {% trans 'Δεν δώσατε σωστό συνδυασμό email και συνθηματικού' %}
+</div>
+{% endif %}
+
+{% if next %}
+    {% if user.is_authenticated %}
+    <div class="alert alert-danger">
+      {% trans 'Είστε ήδη συνδεδεμένος.' %}
+    </div>
+
+    {% else %}
+    <div class="alert alert-primary">
+      {% trans 'Παρακαλούμε συνδεθείτε με τον λογαριασμό σας.' %}
+    </div>
+
+    {% endif %}
+{% endif %}
+
+  <div class="container">
+    <div class="row justify-content-center">
+      <img src="{% static 'myprofile/images/logodit.png' %}" style="max-width:300px">
+    </div>
+    <div class="d-flex justify-content-center align-items-center">
+      <form action="{% url 'set_language' %}" method="post">
+      {% csrf_token %}   
+      <input name="next" type="hidden" value="{{ request.path }}">   
+      <img src="{% static 'myprofile/images/gr.svg' %}"
+            alt="Ελληνικά" style="width:35px; height:auto; display:inline-block; margin-right:8px;" class="me-2">
+       <button class="btn btn-language" type="submit" name="language" value="el">Ελληνικά</button>
+    </div>
+  </br>
+    <div class="d-flex justify-content-center align-items-center">      
+      <img src="{% static 'myprofile/images/en.svg' %}" 
+             alt="English" style="width:35px; height:auto; display:inline-block; margin-right:8px;" class="me-2">
+      <button class="btn btn-language" type="submit" name="language" value="en">English</button>
+    </div>
+  </form>
+  </div>
+  <form method="post" action="{% url 'login' %}">
+  {% csrf_token %}
+
+    <div class="row justify-content-center">
+      <div class="col-sm-3">
+      <label class="login-label" for="id_username">{% trans 'Email' %}</label> <br>
+      <input type="text" name="username" autofocus autocapitalize="none" autocomplete="λογαριασμός"  required id="id_username" class="form-control login-form"> <br>
+      <label class="login-label" for="id_password">{% trans 'Συνθηματικό' %}</label>
+      <input id="id_password" name="password" autocomplete="ο κωδικός σας" required id="id_password"
+                     type="password" class="form-control login-form"> <br>
+      </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-sm-3 text-center">      
+         <button class="btn btn-primary login-button" type="submit"><span class="mto"> login </span>{% trans 'Εισοδος' %} </button>            
+    </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-sm-3 text-center">      
+        <a href="{% url 'myprofile:register' %}" class="btn btn-success login-button" type="submit"> <span class="mto"> add_home </span>{% trans 'Εγγραφή' %} </a>    
+     </div>
+    </div>
+    <div class="row justify-content-center">
+      <div class="col-sm-3 text-center">      
+        <a href="{% url 'myprofile:password_reset_choice' %}" class="btn btn-danger login-button" type="submit"> <span class="mto"> vpn_key_off </span>{% trans 'Ξέχασα τον κωδικό μου' %} </a>
+     </div>
+     <div>    
+    <input type="hidden" name="next" value="{{ next }}">
+    
+    </div>
+    </br>
+    </br>
+  </div>
+</form>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    document.querySelectorAll('input[type="password"]').forEach(function (input) {
+
+        if (input.closest('.password-wrapper')) return;
+
+        const wrapper = document.createElement("div");
+        wrapper.classList.add("input-group", "password-wrapper");
+
+        input.parentNode.insertBefore(wrapper, input);
+        wrapper.appendChild(input);
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.style.borderLeft = "0";
+        button.style.color = "#495057";
+        button.style.backgroundColor = "#ffffff";
+        button.style.border = "1px solid #ced4da";
+        button.style.padding = "0 0.75rem";
+        button.className = "btn btn-outline-secondary material-icons d-flex align-items-center justify-content-center mto";
+        button.textContent = "visibility";
+
+        button.addEventListener("click", function () {
+            if (input.type === "password") {
+                input.type = "text";
+                button.textContent = "visibility_off";
+            } else {
+                input.type = "password";
+                button.textContent = "visibility";
+            }
+        });
+
+        wrapper.appendChild(button);
+    });
+
+});
+</script>
+{% endblock %}

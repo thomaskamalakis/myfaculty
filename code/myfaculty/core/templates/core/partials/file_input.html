@@ -1,0 +1,302 @@
+
+{% load i18n %}
+{% load core_tags %}
+<div class="custom-file-input-wrapper" style="padding-bottom: 1.5rem;">
+{% if field.field.disabled %}
+
+    <!-- Download mode -->
+    <div style="margin-bottom:0.5rem;">
+        <label>
+        {{ field.label }}
+        </label>
+    </div>
+
+    {% if field.value %}
+        <a href="{{ field.value.url }}" class="btn btn-primary" download>
+            <span class="mto">docs</span>
+            <em>{{ field|get_filename }}</em>
+        </a>
+    {% else %}
+        <span class="text-muted">{% trans "Δεν υπάρχει αρχείο" %}</span>
+    {% endif %}
+{% else %}
+
+{% if field.name == "pic" %}
+<input type="file" id="{{ field.auto_id }}" name="{{ field.html_name }}">
+<div class="row mb-2">
+    <div class="col-12 col-md-4">
+        <img id="cropper-image-{{ field.auto_id }}" style="width:100%; display:none;">
+    </div>
+</div>
+<input type="hidden" name="cropped_image" id="cropped-image-{{ field.auto_id }}">
+<div class="current-thumbnail mb-2">
+    {% if field.value %}
+    <img src="{{ field.form.instance.avatar_small.url }}"
+         alt="thumbnail"
+         style="max-width:80px; border-radius:6px; display:block; margin-left:0;">
+    {% endif %}
+</div>
+{% endif %}
+
+<!-- Hidden file input -->
+<input type="file"
+       name="{{ field.html_name }}"
+       id="{{ field.auto_id }}"
+       class="form-control" />
+
+    {% if field.value and not field.field.required %}
+    <input type="checkbox"
+        id="{{ field.auto_id }}_clear"
+        name="{{ field.html_name }}-clear"
+        hidden>
+    {% endif %}
+
+    <label for="{{ field.auto_id }}">
+    {{ field.label }}
+    {% if field.field.required %}
+        <span>*</span>
+    {% endif %}
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+
+        {% if field.value %}
+        <a href="{{ field.value.url }}"
+        class="btn btn-secondary"
+        id="download-{{ field.auto_id }}"
+        download>
+            <span class="mto">download</span>
+            {% if field.name != "pic" %}
+                <em>{{ field|get_filename }}</em>
+            {% endif %}
+        </a>
+        {% endif %}
+
+        {% if field.value and not field.field.required %}
+        <button type="button"
+                class="btn btn-outline-danger"
+                id="remove-{{ field.auto_id }}">
+            <span class="mto">close</span>
+            {% trans "Αφαίρεση" %}
+        </button>
+        {% endif %}
+
+<label for="{{ field.auto_id }}"
+       class="btn btn-primary mb-0"
+       id="upload-btn-{{ field.auto_id }}">
+    <span class="mto">upload</span>
+    {% if field.value %}
+        {% trans "Αντικατάσταση" %}
+    {% else %}
+        {% trans "Επιλέξτε αρχείο" %}
+    {% endif %}
+</label>
+
+    </div>
+
+    <!-- Display currently selected file -->
+    <div class="file-name-display" id="file-name-{{ field.auto_id }}"></div>
+    {% if field.errors %}
+    {% for error in field.errors %}
+    <div class="invalid-feedback d-block">
+    <strong> {{ error }} </strong>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% if field.help_text %}
+    <small class="form-text">
+        {{ field.help_text|safe }}
+    </small>
+{% endif %}
+</div>
+
+<style>
+    .custom-file-input-wrapper input[type="file"] {
+        display: none;
+    }
+    
+    .file-label {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: blue;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin-top: 10px;
+    }
+    
+    .file-label:hover {
+        background-color: #0056b3;
+    }
+    
+    .file-name-display {
+        margin-top: 10px;
+        font-size: 0.9em;
+        color: #666;
+    }
+    
+    .file-name-display.selected {
+        font-weight: 500;
+        color: blue;
+    }
+</style>
+
+<script>
+    (function() {
+        const fileInput = document.getElementById('{{ field.auto_id }}');
+        const fileDisplay = document.getElementById('file-name-{{ field.auto_id }}');
+        
+        fileInput.addEventListener('change', function(e) {
+
+            if (e.target.files.length > 0) {
+
+                // A new file replaces the "remove" action
+                if (clearCheckbox)
+                    clearCheckbox.checked = false;
+
+                const fileName = e.target.files[0].name;
+
+                fileDisplay.textContent =
+                    '{% trans "Θα χρησιμοποιηθεί το αρχείο: " %}' + fileName;
+
+                fileDisplay.classList.add('selected');
+
+                // Hide actions for the old file
+                if (downloadBtn)
+                    downloadBtn.style.display = 'none';
+
+                if (removeBtn) {
+                    removeBtn.style.display = '';
+                    if (clearCheckbox)
+                        clearCheckbox.checked = false;
+                    removeBtn.classList.remove('btn-outline-danger');
+                    removeBtn.classList.add('btn-outline-secondary');
+
+                    removeBtn.innerHTML =
+                        '<span class="mto">undo</span> {% trans "Ακύρωση" %}';
+                }
+
+                uploadBtn.innerHTML =
+                    '<span class="mto">upload</span> {% trans "Αντικατάσταση" %}';
+
+            } else {
+
+                fileDisplay.textContent = '';
+                fileDisplay.classList.remove('selected');
+            }
+
+        });
+        const removeBtn = document.getElementById('remove-{{ field.auto_id }}');
+        const downloadBtn = document.getElementById('download-{{ field.auto_id }}');
+        const uploadBtn = document.getElementById('upload-btn-{{ field.auto_id }}');
+        const clearCheckbox = document.getElementById('{{ field.auto_id }}_clear');
+
+        if (removeBtn) {
+            removeBtn.addEventListener('click', function () {
+
+                if (fileInput.files.length > 0) {
+                // If the user has selected a new file,
+                // this button acts as "Cancel selection".
+                    {% if field.value %}
+                    if (downloadBtn)
+                        downloadBtn.style.display = '';
+                    {% endif %}
+
+                    fileInput.value = '';
+                    
+                    fileDisplay.textContent = '';
+                    fileDisplay.classList.remove('selected');
+
+                    if (downloadBtn)
+                        downloadBtn.style.display = '';
+
+                    removeBtn.classList.remove('btn-outline-secondary');
+                    removeBtn.classList.add('btn-outline-danger');
+
+                    removeBtn.innerHTML =
+                        '<span class="mto">close</span> {% trans "Αφαίρεση" %}';
+
+                        {% if field.value %}
+                        uploadBtn.innerHTML =
+                            '<span class="mto">upload</span> {% trans "Αντικατάσταση" %}';
+                        {% else %}
+                        uploadBtn.innerHTML =
+                            '<span class="mto">upload</span> {% trans "Επιλέξτε αρχείο" %}';
+                        {% endif %}
+
+                        {% if field.value %}
+                        if (removeBtn)
+                            removeBtn.style.display = '';
+                        {% else %}
+                        if (removeBtn)
+                            removeBtn.style.display = 'none';
+                        {% endif %}
+                    return;
+                }
+
+                // Otherwise, remove the existing file
+                clearCheckbox.checked = true;
+
+                // If the user had already selected a replacement, forget it
+                fileInput.value = '';
+
+                // Hide the old file actions
+                if (downloadBtn)
+                    downloadBtn.style.display = 'none';
+
+                removeBtn.style.display = 'none';
+
+                // Update the upload button
+                uploadBtn.innerHTML =
+                    '<span class="mto">upload</span> {% trans "Επιλέξτε νέο αρχείο" %}';
+
+                // Inform the user
+                fileDisplay.textContent =
+                    '{% trans "Το αρχείο θα αφαιρεθεί μετά την αποθήκευση." %}';
+                fileDisplay.classList.add('selected');
+            });
+        }
+        
+    })();
+
+(function() {
+    const input = document.getElementById('{{ field.auto_id }}');
+    const image = document.getElementById('cropper-image-{{ field.auto_id }}');
+    const hidden = document.getElementById('cropped-image-{{ field.auto_id }}');
+
+    let cropper;
+
+    input.addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const url = URL.createObjectURL(file);
+        image.src = url;
+        image.style.display = 'block';
+
+        if (cropper) {
+            cropper.destroy();
+        }
+
+        cropper = new Cropper(image, {
+            aspectRatio: 1,
+            autoCropArea: 0.95,       
+            movable: true,
+            zoomable: true,
+            background: false, 
+        });
+    });
+
+    // Before form submit → replace file with cropped version
+    input.form.addEventListener('submit', function() {
+        if (!cropper) return;
+
+        const canvas = cropper.getCroppedCanvas({
+            width: 300,
+            height: 300
+        });
+
+        hidden.value = canvas.toDataURL('image/jpeg');
+    });
+})();
+</script>
+{% endif %}

@@ -1,0 +1,60 @@
+---
+services:
+  db:
+    image: postgres:17
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    networks:
+      - vmprod
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./code/myfaculty:/code
+      - ./code/tmp:/code/tmp
+    ports:
+      - "30100:8000"
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_NAME=${POSTGRES_DB}
+      - POSTGRES_HOST=db
+    depends_on:
+      - db
+    networks:
+      - vmprod
+
+  redis:
+    image: redis:7
+    networks:
+      - vmprod
+
+  worker:
+    build: .
+    command: celery -A myfaculty worker --loglevel=INFO
+    volumes:
+      - ./code/myfaculty:/code
+      - ./code/tmp:/code/tmp
+    env_file:
+      - .env
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - POSTGRES_NAME=${POSTGRES_DB}
+      - POSTGRES_HOST=db
+    depends_on:
+      - db
+      - redis
+    networks:
+      - vmprod
+
+networks:
+  vmprod:
+    name: vmprod
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: "1450"

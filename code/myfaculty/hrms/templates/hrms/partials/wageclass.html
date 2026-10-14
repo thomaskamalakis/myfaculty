@@ -1,0 +1,57 @@
+{% load i18n %}
+<h5>{% trans 'Μισθολογικό Κλιμάκιο' %}</h5>
+<div class="row">
+
+<div class="col-md-3 d-flex">
+<div class="card w-100" style="border-radius: 1rem; border-width: 1px;">
+ <div class="card-body">
+    <h6 class="card-title">{% trans 'Τιμές Αναφοράς' %}</h6>
+    </div>
+    <ul class="list-group list-group-flush">
+    <li class="list-group-item"> {% trans 'Ημερομηνία Αναφοράς' %}: <strong> {{ ref_date }} </strong></li>    
+    <li class="list-group-item"> {% trans 'Κλιμάκιο Αναφοράς' %}: <strong> {% trans 'ΜΚ' %}-{{ ref_value }} </strong></li>        
+    </ul>    
+</div>
+</div>
+
+<div class="col-md-3 d-flex">
+<div class="card w-100" style="border-radius: 1rem; border-width: 1px;">
+ <div class="card-body">
+    <h6 class="card-title">{% trans 'Τρέχουσα Κατάσταση' %}</h6>
+    </div>
+    <ul class="list-group list-group-flush">
+    <li class="list-group-item"> {% trans 'Ημερομηνία' %}: <strong> {{ at }} </strong></li>    
+    <li class="list-group-item"> {% trans 'Κλιμάκιο' %}: <strong> {% trans 'ΜΚ' %}-{{ curr_c }} </strong></li>        
+    <li class="list-group-item"> {% trans 'Προηγούμενη Μεταβολή' %}: <strong> {{ curr_d }} </strong></li>        
+    <li class="list-group-item"> {% trans 'Επόμενη Μεταβολή' %}: <strong> {{ next_d }} </strong></li>        
+    
+</ul>    
+</div>
+</div>
+
+<div class="col-md-3 d-flex">
+<div class="card w-100" style="border-radius: 1rem; border-width: 1px;">
+ <div class="card-body">
+    <h6 class="card-title">{% trans 'Χρόνος Παραμονής' %}</h6>
+    </div>
+    <ul class="list-group list-group-flush">
+    <li class="list-group-item"> {% trans 'Έτη' %}: <strong> {{ y_in }} </strong></li>    
+    <li class="list-group-item"> {% trans 'Μήνες' %}: <strong> {{ m_in }} </strong></li>        
+    <li class="list-group-item"> {% trans 'Ημέρες' %}: <strong> {{ d_in }} </strong></li>        
+</ul>    
+</div>
+</div>
+<div class="col-md-3 d-flex">
+<div class="card w-100" style="border-radius: 1rem; border-width: 1px;">
+ <div class="card-body">
+    <h6 class="card-title">{% trans 'Υπολειπόμενος Χρόνος' %}</h6>
+    </div>
+    <ul class="list-group list-group-flush">
+    <li class="list-group-item"> {% trans 'Έτη' %}: <strong> {{ y_left }} </strong></li>    
+    <li class="list-group-item"> {% trans 'Μήνες' %}: <strong> {{ m_left }} </strong></li>        
+    <li class="list-group-item"> {% trans 'Ημέρες' %}: <strong> {{ d_left }} </strong></li>        
+</ul>    
+</div>
+</div>
+
+</div>

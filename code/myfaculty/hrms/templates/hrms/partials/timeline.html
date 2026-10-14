@@ -1,0 +1,86 @@
+<div class="container-fluid p-4">
+
+
+<div class="timeline-wrapper">
+
+    <div class="timeline">
+
+        <!-- HEADER -->
+
+        <div class="timeline-header d-flex border-bottom">
+
+            <div class="row-label header-label">
+                {{ label_header }}
+            </div>
+
+            {% for month in months %}
+
+                <div class="month-cell"
+                     style="
+                        width: {{ month.width }}px;
+                        min-width: {{ month.width }}px;
+                     ">
+
+                    {{ month.label }}
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+        <!-- ROWS -->
+
+        {% for row in rows %}
+
+        <div class="d-flex timeline-row">
+
+            <!-- LEFT LABEL -->
+
+            <div class="row-label">
+
+                {{ row.name }}
+
+            </div>
+
+            <!-- CONTENT -->
+
+            <div class="timeline-content">
+
+                {% for item in row.items %}
+
+                <div class="timeline-bar {{ item.css_class }}"
+                     style="
+                        left: {{ item.left }}px;
+                        width: {{ item.width }}px;
+                     ">
+
+                    <div class="timeline-bar-title">
+
+                        {{ item.title }}
+
+                    </div>
+
+                    <div class="timeline-bar-date">
+
+                        {{ item.start|date:"d/m/Y" }}
+                        —
+                        {{ item.end|date:"d/m/Y" }}
+
+                    </div>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+</div>

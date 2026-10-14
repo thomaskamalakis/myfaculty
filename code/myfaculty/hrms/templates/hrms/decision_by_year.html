@@ -1,0 +1,39 @@
+<!-- hrms/test.html -->
+
+{% extends 'hrms/hr_page.html' %}
+{% load i18n %}
+{% load hrms_tags %}
+{% load core_tags %}
+{% block middle %}
+
+<div class="row text-center justify-content-center">
+    <div class="col-sm-6 p-3 m-3">
+        <p> {% trans 'Όνομα' %}: <b> {{ decision.employee.get_personal_info.given_name }} </b></p>
+        <p> {% trans 'Επώνυμο' %}: <b> {{ decision.employee.get_personal_info.surname }} </b></p>
+        <p> {% trans 'Ημερομηνία Απόφασης' %}: <b> {{ decision.date }} </b></p>
+        <p> {% trans 'Αριθμος Απόφασης' %}: <b> {{ decision.ref_no }}</b> </p>
+    </br>
+    </br>
+<table class="table">
+    <thead>
+        <th scope="col">
+            {% trans 'Έτος' %}
+        </th>
+        <th scope="col">
+            {% trans 'Ημέρες Αναγνώρισης (προσέγγιση)' %}
+        </th>
+        <th scope="col">
+        </th>        
+    </thead>
+    {% for year, days in days_dict.items %}
+    <tr>
+        <td> {{ year }} </td>
+        <td> {{ days|floatformat:2 }} </td>
+        <td> <a href="{% url 'hrms:hr_decision_in_year' decision.pk year %}" class="btn btn-success">{% trans 'Λεπτομέρειες' %}</a></td>
+    </tr>
+    {% endfor %}
+</table>
+</div>
+</div>
+
+{% endblock %}

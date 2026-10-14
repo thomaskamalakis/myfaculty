@@ -1,0 +1,21 @@
+{% extends 'hrms/hr_page.html' %}
+{% load i18n %}
+{% load hrms_tags %}
+{% load crispy_forms_tags %}
+{% load core_tags %}
+{% block middle %}
+
+<form method="post">
+    {% csrf_token %}
+
+    {% crispy employee_form %}
+
+    <hr>
+
+    {% crispy reference_form %}
+
+    <button type="submit" class="btn btn-primary">
+        Save
+    </button>
+</form>
+{% endblock %}

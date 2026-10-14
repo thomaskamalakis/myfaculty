@@ -1,0 +1,205 @@
+
+{% load core_tags %}
+{% load i18n %}
+<script>
+    $(document).ready(function() {
+      $('#{{ table_id }}').DataTable({
+        "lengthChange": false,
+        "pageLength": {{ page_length }},
+        {% if table_order %}
+        "order" : {{ table_order|safe }},
+        {% elif select_checkboxes %}
+        "order" : [[ 1, "desc" ]],
+        {% else %}
+        "order" : [[ 0, "desc" ]],
+        {% endif %}
+        {% if select_checkboxes %}
+        "columnDefs" : [{ "targets": 0, "orderable": false }],
+        {% endif %}
+        language: {
+          search: "{% trans 'Αναζήτηση' %}",
+          info: "_START_ - _END_ ({% trans 'σύνολο:' %} _TOTAL_ {% trans 'εγγραφές' %})",
+          paginate: {
+            previous: "{% trans 'Προηγούμενο' %}",
+            next: "{% trans 'Επόμενο' %}",
+          } 
+        }    
+      }
+      );
+    });
+  </script>
+
+<div class="row">
+  <div class="col">
+    <h3> {{ table_title }}</h3>
+  </div>
+  {% if select_checkboxes and bulk_delete_url and objects %}
+  <div class="col-auto">
+    <form id="{{ table_id }}-bulk-form" method="post" action="{{ bulk_delete_url }}">
+      <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
+      {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+      <button type="submit" id="{{ table_id }}-bulk-button" class="btn btn-danger" disabled>
+        <span class="mto">delete_forever</span> {{ bulk_delete_text }} (<span id="{{ table_id }}-bulk-count">0</span>)
+      </button>
+    </form>
+  </div>
+  {% endif %}
+  {% if create_button %}
+  <div class="d-flex justify-content-end">
+    {% if next %}
+    <a href="{{ create_url }}?next={{ next }}" class="{{ create_button_class }}" >
+      <span class="mto">{{ create_button_icon }}</span> {{ create_text }}
+    </a>
+    {% else %}
+    <a href="{{ create_url }}" class="{{ create_button_class }}" >
+      <span class="mto">{{ create_button_icon }}</span> {{ create_text }}
+    </a>    
+    {% endif %}
+  </div>
+  {% endif %}
+</div> 
+</br>
+{% if objects %}  
+  {% if export_url %}
+  <div class="row">
+     <div class="d-flex justify-content-center"> <a class="{{ create_button_class }}" href="{{ export_url }}">
+       <span class="mto">arrow_downward</span>  {{ export_text }}</a>
+     </div>
+  </div>
+  {% endif %}
+  <table id="{{ table_id }}">
+    <thead>
+      <tr>
+  {% if select_checkboxes %}
+  <th><input type="checkbox" class="form-check-input" id="{{ table_id }}-select-all" aria-label="select all"></th>
+  {% endif %}
+  {% for field in fields %}
+      <th>
+        {{ headers|get_item:field }}
+      </th>
+  {% endfor %}
+  {% if update_buttons %} 
+  <th></th>
+  {% endif %}  
+  {% if extra_buttons %} 
+  <th></th>
+  {% endif %}    
+  {% if extra_buttons2 %} 
+  <th></th>
+  {% endif %}     
+  {% if delete_buttons %} 
+  <th></th>
+  {% endif %}  
+  </tr>   
+    </thead>
+  {% for object in objects %}
+    <tr>
+    {% if select_checkboxes %}
+    <td><input type="checkbox" class="form-check-input {{ table_id }}-select" value="{{ object.pk }}"{% if object.select_disabled_reason %} disabled title="{{ object.select_disabled_reason }}"{% endif %}></td>
+    {% endif %}
+    {% for field in fields %}
+      <td>
+        {{ object|get_attr:field }}
+      </td>
+    {% endfor %}
+    {% if update_buttons %} 
+    <td style="text-align: right;">
+      {% if next %}
+      <a href="{{ object.update_url }}?next={{ next }}" class="{{ update_button_class }}">
+      {% else %}
+      <a href="{{ object.update_url }}" class="{{ update_button_class }}">
+      {% endif %}      
+      <span class="mto">{{ update_button_icon }}</span>
+      {{ update_text }}</a>
+    </td>
+    {% endif %}  
+    {% if extra_buttons %} 
+    <td style="text-align: right;">
+      {% if next %}
+      <a href="{{ object.extra_url }}?next={{ next }}" class="{{ extra_button_class }}">
+      {% else %}
+      <a href="{{ object.extra_url }}" class="{{ extra_button_class }}">
+      {% endif %}      
+      <span class="mto">{{ extra_button_icon }}</span>
+      {{ extra_text }}</a>
+    </td>
+    {% endif %}
+    {% if extra_buttons2 %} 
+    <td style="text-align: right;">
+      {% if next %}
+      <a href="{{ object.extra_url2 }}?next={{ next }}" class="{{ extra_button_class2 }}">
+      {% else %}
+      <a href="{{ object.extra_url2 }}" class="{{ extra_button_class2 }}">
+      {% endif %}      
+      <span class="mto">{{ extra_button_icon2 }}</span>
+      {{ extra_text2 }}</a>
+    </td>
+    {% endif %}  
+    {% if delete_buttons %} 
+    <td>
+
+    </td>
+    {% endif %}  
+  </tr>
+  {% endfor %}
+  </table>
+  {% else %}
+  <p> {{ empty_text }}</p>
+  {% endif %}
+{% if select_checkboxes and bulk_delete_url and objects %}
+<script>
+  (function () {
+    var tableId = "{{ table_id }}";
+    var table = document.getElementById(tableId);
+    var form = document.getElementById(tableId + "-bulk-form");
+    var button = document.getElementById(tableId + "-bulk-button");
+    var count = document.getElementById(tableId + "-bulk-count");
+    var selectAll = document.getElementById(tableId + "-select-all");
+    // Τα επιλεγμένα pk κρατιούνται εδώ γιατί το DataTables αφαιρεί από το DOM τις γραμμές άλλων σελίδων
+    var selected = new Set();
+
+    function boxes() {
+      return table.querySelectorAll("input." + tableId + "-select:not(:disabled)");
+    }
+
+    function refresh() {
+      boxes().forEach(function (box) { box.checked = selected.has(box.value); });
+      var visible = Array.from(boxes());
+      selectAll.checked = visible.length > 0 && visible.every(function (box) { return box.checked; });
+      count.textContent = selected.size;
+      button.disabled = selected.size === 0;
+    }
+
+    table.addEventListener("change", function (event) {
+      var target = event.target;
+      if (target === selectAll) {
+        boxes().forEach(function (box) {
+          if (selectAll.checked) { selected.add(box.value); } else { selected.delete(box.value); }
+        });
+      } else if (target.classList.contains(tableId + "-select")) {
+        if (target.checked) { selected.add(target.value); } else { selected.delete(target.value); }
+      }
+      refresh();
+    });
+
+    // Μετά από σελιδοποίηση, αναζήτηση ή ταξινόμηση το DataTables ξαναχτίζει τις γραμμές
+    $("#" + tableId).on("draw.dt", refresh);
+
+    form.addEventListener("submit", function (event) {
+      if (selected.size === 0 || !window.confirm("{{ bulk_delete_confirm|escapejs }} (" + selected.size + ")")) {
+        event.preventDefault();
+        return;
+      }
+      selected.forEach(function (pk) {
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "ids";
+        input.value = pk;
+        form.appendChild(input);
+      });
+    });
+
+    refresh();
+  })();
+</script>
+{% endif %}

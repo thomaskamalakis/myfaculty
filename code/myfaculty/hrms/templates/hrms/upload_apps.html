@@ -1,0 +1,33 @@
+{% extends 'hrms/hr_page.html' %}
+{% load i18n %}
+{% block middle %}
+
+<h3>{% trans 'Εισαγωγή Συμβάσεων από Excel' %}</h3>
+<p>{% trans 'Εργαζόμενος' %}: <b>{{ employee.surname }} {{ employee.given_name }}</b></p>
+
+{% for message in messages %}
+<div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+{% endfor %}
+{% if file_errors %}
+<div class="alert alert-danger" role="alert">
+  {% for error in file_errors %}<div>{{ error }}</div>{% endfor %}
+</div>
+{% endif %}
+
+<p>{% trans 'Κατεβάστε το template, συμπληρώστε μία γραμμή ανά σύμβαση και ανεβάστε το. Θα γίνει πρώτα έλεγχος όλων των γραμμών και οι συμβάσεις θα γραφτούν μόνο αν είναι όλες σωστές.' %}</p>
+
+<form method="post" enctype="multipart/form-data" action="{% url 'hrms:hr_validate_apps' employee.pk %}" class="mb-3">
+  {% csrf_token %}
+  <div class="row align-items-end">
+    <div class="col-md-6">
+      <label for="file" class="form-label">{% trans 'Αρχείο .xlsx' %}</label>
+      <input class="form-control" type="file" name="file" id="file" accept=".xlsx" required>
+    </div>
+    <div class="col-auto">
+      <button type="submit" class="btn btn-primary"><span class="mto">fact_check</span> {% trans 'Έλεγχος αρχείου' %}</button>
+      <a href="{% url 'hrms:hr_apps_template' %}" class="btn btn-success"><span class="mto">download</span> {% trans 'Template (.xlsx)' %}</a>
+    </div>
+  </div>
+</form>
+
+{% endblock %}

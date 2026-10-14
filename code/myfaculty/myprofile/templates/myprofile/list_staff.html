@@ -1,0 +1,66 @@
+{% extends 'myprofile/page.html' %}
+
+{% block middle %}
+
+  
+<script>
+    $(document).ready(function() {
+      $('#staff').DataTable({
+        "lengthChange": false,
+        "pageLength": 100
+      }
+      );
+    });
+  </script>
+<div class="row">
+  <div class="col">
+    <h3> Διδακτικό Προσωπικό </h3>
+  </div>
+  <div class="d-flex justify-content-end">
+  <a href="{% url 'myprofile:create_staff' %}" class="btn btn-primary" >
+    + Νέος διδάσκοντας
+  </a>
+  </div>
+</div> 
+</br>
+{% if staff %}  
+  <div class="d-flex justify-content-center">
+  <a href="{% url 'myprofile:export_staff_csv' %}" class="btn btn-success" >
+    Εξαγωγή
+  </a>
+  </div>
+
+<table id = "staff" class="table">
+    <thead>
+      <tr>
+        <th scope="col">Όνοματεπώνυμο</th>
+        <th scope="col">Email</th>       
+        <th scope="col"></th>  
+        <th scope="col"></th>  
+      </tr>
+    </thead>    
+  </tbody>
+  {% for s in staff %}
+  <tr>
+    <td>
+    {{ s.display_name }}
+    </td>
+    <td>
+    {{ s.email }}
+    </td>    
+    <td>
+    <a href="{% url 'myprofile:edit_staff' s.id %}" type="submit" class="btn btn-primary tablebutton"> Επεξεργασία </a>         
+    </td>
+    <td>
+    <a href="{% url 'myprofile:sec_profile_update' s.personal_info.id %}" type="submit" class="btn btn-primary tablebutton"> Ακαδημαϊκό Προφίλ </a>         
+    </td>
+  </tr>
+  {% endfor %}
+  </tbody>
+  </table>
+  {% else %}
+  <p>Δεν έχετε καταχωρήσει διδακτικό προσωπικό</p>
+  {% endif %}
+
+
+{% endblock %}

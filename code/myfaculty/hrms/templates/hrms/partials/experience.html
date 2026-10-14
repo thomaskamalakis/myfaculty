@@ -1,0 +1,15 @@
+{% load i18n %}
+
+<div class="col-md-3 d-flex">
+<div class="card w-100" style="border-radius: 1rem; border-width: 1px;">
+ <div class="card-body">
+    <h6 class="card-title">{% trans 'Στοιχεία Αναγνωρισμένης Προϋπηρεσίας' %}</h6>
+    </div>
+    <ul class="list-group list-group-flush">
+    <li class="list-group-item"> {% trans 'Σύνολο Ημερών' %}: <strong> {{ all_days }}{% trans 'Ημ.' %}</strong></li>    
+    <li class="list-group-item"> {% trans 'Έτη' %}: <strong> {{ y_all }} </strong></li>        
+    <li class="list-group-item"> {% trans 'Mήνες' %}: <strong> {{ m_all }} </strong></li>        
+    <li class="list-group-item"> {% trans 'Ημέρες' %}: <strong> {{ d_all }} </strong></li>            
+    </ul>    
+</div>
+</div>

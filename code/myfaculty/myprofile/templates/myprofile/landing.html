@@ -1,0 +1,15 @@
+{% extends 'myprofile/page.html' %}
+{% block middle %}
+{% load i18n %}
+<h3> {% trans 'Κεντρική Σελίδα' %} </h3>
+<p> {% trans 'Καλώς ορίσατε στην εφαρμογή μας.' %} </p>
+<p> {% trans 'Μπορείτε να έχετε πρόσβαση στις εξής εφαρμογές' %}: </p>
+
+{% for app in apps %}
+<div class="row">
+    <div class="col text-center landing-button-col ">
+         <a class="nav-link-icon" href="{{ app.url }}" > <span class="mto" style="font-size: 20pt;"> apps</span> <div class="app-div">{{ app.title }}</div> </a>
+    </div>
+</div>  
+{% endfor %}
+{% endblock %}

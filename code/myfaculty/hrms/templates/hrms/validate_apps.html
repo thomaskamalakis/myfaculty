@@ -1,0 +1,67 @@
+{% extends 'hrms/hr_page.html' %}
+{% load i18n %}
+{% block middle %}
+
+<h3>{% trans 'Έλεγχος Αρχείου Συμβάσεων' %}</h3>
+<p>{% trans 'Εργαζόμενος' %}: <b>{{ employee.surname }} {{ employee.given_name }}</b></p>
+
+{% if file_errors %}
+<div class="alert alert-danger" role="alert">
+  {% for error in file_errors %}<div>{{ error }}</div>{% endfor %}
+</div>
+{% endif %}
+
+{% if results %}
+  {% if all_valid %}
+  <div class="alert alert-success" role="alert">
+    {% blocktrans count counter=results|length %}Η γραμμή είναι σωστή. Μπορείτε να την καταχωρήσετε.{% plural %}Και οι {{ counter }} γραμμές είναι σωστές. Μπορείτε να τις καταχωρήσετε.{% endblocktrans %}
+  </div>
+  {% else %}
+  <div class="alert alert-danger" role="alert">
+    {% trans 'Υπάρχουν γραμμές με σφάλματα. Διορθώστε το αρχείο και ανεβάστε το ξανά - δεν έχει γραφτεί καμία σύμβαση.' %}
+  </div>
+  {% endif %}
+
+  <table class="table table-sm align-middle">
+    <thead>
+      <tr>
+        <th scope="col">{% trans 'Γραμμή' %}</th>
+        <th scope="col">{% trans 'Τύπος' %}</th>
+        <th scope="col">{% trans 'Φορέας' %}</th>
+        <th scope="col">{% trans 'Έναρξη' %}</th>
+        <th scope="col">{% trans 'Λήξη' %}</th>
+        <th scope="col">{% trans 'Αποτέλεσμα' %}</th>
+      </tr>
+    </thead>
+    {% for r in results %}
+    <tr class="{% if not r.valid %}table-danger{% endif %}">
+      <td>{{ r.row_no }}</td>
+      <td>{{ r.type_label }}</td>
+      <td>{{ r.data.organization }}</td>
+      <td>{{ r.data.start_date }}</td>
+      <td>{{ r.data.end_date }}</td>
+      <td>
+        {% if r.valid %}
+        <span class="mto text-success">check_circle</span>
+        {% else %}
+        <ul class="mb-0">{% for error in r.errors %}<li>{{ error }}</li>{% endfor %}</ul>
+        {% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endif %}
+
+<div class="row text-center">
+  <div class="col">
+    <a href="{% url 'hrms:hr_upload_apps' employee.pk %}" class="btn btn-secondary"><span class="mto">upload</span> {% trans 'Νέο αρχείο' %}</a>
+    {% if all_valid %}
+    <form method="post" action="{% url 'hrms:hr_import_apps' employee.pk %}" class="d-inline">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary"><span class="mto">save</span> {% trans 'Εγγραφή στη βάση' %}</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,87 @@
+<!-- hrms/test.html -->
+
+{% extends 'hrms/hr_page.html' %}
+{% load i18n %}
+{% load hrms_tags %}
+{% load core_tags %}
+{% block middle %}
+
+<h3> {% trans 'Αναλυτική Περιγραφή Συμβάσεων' %}</h3>
+
+<table class="table">
+    <thead>
+        <th scope="col">
+            {% trans 'Έναρξη' %}
+        </th>
+        <th scope="col">
+            {% trans 'Λήξη' %}
+        </th>
+        <th scope="col">
+            {% trans 'Φορέας' %}
+        </th>        
+        <th scope="col">
+            {% trans 'Τύπος' %}
+        </th>
+        <th scope="col">
+            {% trans 'Ποσοστό' %}
+        </th>
+    </thead>
+    {% for app in applications %}
+    <tr>
+        <td> {{ app.start_date }} </td>
+        <td> {{ app.end_date }}</td>
+        <td> {{ app.organization }} </td>
+        <td> {{ app.get_type_display }}</td>
+        <td> {{ app.day_percentage_formatted }}</td>        
+    </tr>
+    {% endfor %}
+</table>
+<br>
+<br>
+
+<h3> {% trans 'Αναλυτική Αναφορά Διαστημάτων' %}</h3>
+<p> {% trans 'Με την τρέχουσα και τις προηγούμενες αποφάσεις' %}</p>
+
+<table class="table">
+    <thead>
+        <th scope="col">
+            {% trans 'Έναρξη' %}
+        </th>
+        <th scope="col">
+            {% trans 'Λήξη' %}
+        </th>
+        <th scope="col">
+            {% trans 'Φορείς' %}
+        </th>
+        <th scope="col">
+            {% trans 'Ποσοστό' %}
+        </th>
+        <th scope="col">
+            {% trans 'Ημερολογιακές' %}
+        </th>
+         <th scope="col">
+            {% trans 'Προς αναγνώριση' %}
+        </th>
+        
+        
+    </thead>
+    {% for el in interval_map %}
+    <tr>
+        <td> {{ el.start }} </td>
+        <td> {{ el.end }}</td>
+        <td> <ul> 
+            {% for i in el.idx %}
+             <li>   {{ orgs|get_item:i }} [{{ types|get_item:i }}]</li>
+             {% endfor %}
+             </ul>
+        </td>
+        <td> {% widthratio el.value 1 100 %}%</td>
+        <td> {{ el.calendar_days }}</td>
+        <td> {{ el.days|floatformat:2 }}</td>        
+    </tr>
+    {% endfor %}
+
+</table>
+
+
+{% endblock %}

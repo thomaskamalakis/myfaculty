@@ -1,0 +1,50 @@
+{% extends 'hrms/hr_page.html' %}
+{% load i18n %}
+{% load hrms_tags %}
+{% load core_tags %}
+{% block middle %}
+
+<h3>
+    {% trans 'Τα στοιχεία σας' %}
+</h3>
+<p>
+    {% trans 'Επώνυμο' %}: {{ employee.surname }}
+</p>
+<p>
+    {% trans 'Όνομα' %}: {{ employee.given_name }}
+</p>
+<p>
+    {% trans 'Email' %}: {{ employee.email }}
+</p>
+<br>
+<br>
+<div class="row">
+    <div class="col text-center">
+        <a href="{% url 'hrms:hr_update_employee' employee.pk %}?next={{ next }}" class="btn btn-success"> 
+            <span class="mto">contacts</span>
+            Αναλυτικά Στοιχεία</a>
+    </div>    
+</div>
+<br>
+<br>
+{% if experience %}
+<div class="row text-center justify-content-center">
+{% render_experience experience %}
+</div>
+<br>
+<br>
+{% endif %}
+{% render_wageclass wageclass %}
+<br><br>
+{% render_rankclass rankclass %}
+<br><br>
+{% render_table app_table %}
+
+<br>
+<br>
+
+{% render_table dec_table %}
+
+{% render_table payroll_table %}
+
+{% endblock %}

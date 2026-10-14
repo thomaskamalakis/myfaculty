@@ -1,0 +1,17 @@
+{% extends 'myprofile/page.html' %}
+{% load i18n %}
+{% load hrms_tags %}
+{% load core_tags %}
+{% load profile_tags %}
+{% block submenu %}
+<div class="row">
+  <div class="col d-flex justify-content-center">
+    {% if request.user|is_hr %}
+    <a href="{% url 'hrms:hr_employee_list' %}" class="btn btn-primary me-3"><span class="mto">person</span>{% trans 'Αρχική' %}</a>
+    {% endif %}
+  </div>  
+</div>
+{% endblock %}
+{% block middle %}
+
+{% endblock %}

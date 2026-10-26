@@ -137,7 +137,8 @@ code/myfaculty/        Django project
   leaves/, projects/, timesheets/, attendances/, rfs/, associates/
   hrms/                ανθρώπινο δυναμικό: συμβάσεις, αποφάσεις προϋπηρεσίας
   mailer/              αποστολή e-mail (Gmail API, Celery)
-  api/, apiv2/         REST API
+  api/, apiv2/         REST API (η τεκμηρίωση του apiv2 στο apiv2/README.md)
+  mcp_server/          MCP server πάνω από το apiv2 (MCP_MODE στο .env)
   scripts/             δοκιμαστικά δεδομένα (initial_data.py)
 Dockerfile, docker-compose.yaml, env.template
 ```

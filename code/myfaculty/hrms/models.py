@@ -8,7 +8,7 @@ import math
 from django.utils import timezone
 from dateutil.relativedelta import relativedelta
 from django.conf import settings
-from datetime import date
+from datetime import date, timedelta
 from copy import copy
 
 HOURLY_WAGE = settings.HOURLY_WAGE 
@@ -279,13 +279,17 @@ class Application(models.Model):
         super().save(*args, **kwargs)
 
     def to_interval(self, cutoff_date = None):
-
-        return interval(
+        """Το διάστημα της σύμβασης. Αν δοθεί cutoff_date, το τέλος κόβεται σε αυτήν (π.χ. πρόσληψη).
+        Το day_percentage δεν αλλάζει: υπολογίζεται πάνω στην ολόκληρη σύμβαση."""
+        iv = interval(
             start = self.start_date,
             end = self.end_date,
             value = self.day_percentage,
             idx = self.pk
         )
+        if cutoff_date:
+            iv = iv.trimmed(d_end = cutoff_date)
+        return iv
     
     def is_in_year(self, year):
         return self.to_interval().is_in_year(year)
@@ -350,6 +354,13 @@ class Decision(models.Model):
     def we_as_str(self):
         return f'{self.years()}Ε {self.months()}Μ {self.days()}Η'
     
+    def _hire_cutoff(self):
+        """Τελευταία ημέρα που μετράει η προϋπηρεσία: η προηγούμενη της πρόσληψης (None αν λείπει)."""
+        date_hired = self.employee.date_hired
+        if date_hired is None:
+            return None
+        return date_hired - timedelta(days=1)
+
     def _applications_before_hire(self, applications):
         """Οι αιτήσεις/εμπειρίες που ξεκινούν πριν την πρόσληψη. Αν το
         Employee.date_hired λείπει (π.χ. εργαζόμενος που δημιουργήθηκε από
@@ -366,12 +377,13 @@ class Decision(models.Model):
         # First get decision intervals based on applications
         all_apps = self._applications_before_hire(self.applications.all())
 
-        current_intervals = [
-            app.to_interval().trimmed_in_year(year) for app in all_apps if app.is_in_year(year)
+        cutoff = self._hire_cutoff()
+        current_apps = [
+            app for app in all_apps if app.to_interval(cutoff).is_in_year(year)
         ]
 
-        current_apps = [
-            app for app in all_apps if app.is_in_year(year)
+        current_intervals = [
+            app.to_interval(cutoff).trimmed_in_year(year) for app in current_apps
         ]
 
         # Then check decisions with prior date
@@ -380,7 +392,7 @@ class Decision(models.Model):
         prior_intervals = []
         for decision in prior_decisions:
             prior_apps = self._applications_before_hire(decision.applications.all())
-            prior_intervals += [ app.to_interval() for app in prior_apps ]
+            prior_intervals += [ app.to_interval(self._hire_cutoff()) for app in prior_apps ]
             all_apps += prior_apps
 
         if len(prior_intervals) > 0:
@@ -434,8 +446,8 @@ class Decision(models.Model):
         # First get decision intervals based on applications
         all_apps = self._applications_before_hire(self.applications.all())
         current_intervals = [
-            app.to_interval() for app in all_apps
-        ]       
+            app.to_interval(self._hire_cutoff()) for app in all_apps
+        ]
             
         # Then check decisions with prior date
         prior_decisions = Decision.objects.filter(date__lt = self.date, employee=self.employee).order_by('-date')
@@ -443,7 +455,7 @@ class Decision(models.Model):
         prior_intervals = []
         for decision in prior_decisions:
             prior_apps = self._applications_before_hire(decision.applications.all())
-            prior_intervals += [ app.to_interval() for app in prior_apps ]
+            prior_intervals += [ app.to_interval(self._hire_cutoff()) for app in prior_apps ]
             all_apps += prior_apps
 
         if len(prior_intervals) > 0:

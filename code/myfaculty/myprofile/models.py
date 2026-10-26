@@ -351,6 +351,13 @@ class Employee(models.Model):
     )
     objects = EmployeeManager()
 
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # hrms imports myprofile, so the models are resolved lazily
+        from django.apps import apps
+        for name in ('WageClass', 'RankClass'):
+            apps.get_model('hrms', name).objects.get_or_create(employee=self)
+
     def get_staff(self):
         if self.is_faculty_staff:
             return self.faculty_staff

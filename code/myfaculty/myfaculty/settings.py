@@ -358,7 +358,7 @@ CELERY_RESULT_BACKEND = "django-db"
 # Budibase key used for migrations:
 BUDI_KEY = os.environ.get('BUDI_KEY')
 
-IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = 'imagekit.cachefiles.strategies.Optimistic'
+IMAGEKIT_DEFAULT_CACHEFILE_STRATEGY = 'core.imagekit_strategies.SafeOptimistic'
 
 #####
 #WORK EXPERIENCE SETTINGS

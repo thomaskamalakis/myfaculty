@@ -34,6 +34,7 @@ urlpatterns = [
     path('hr', views.hr_employee_list, name='hr'),
 
     path('hr/export/desc/<int:pk>', views.hr_export_decision_ints, name='hr_export_desc_int'),
+    path('hr/export/minutes/<int:pk>', views.hr_export_decision_minutes, name='hr_export_minutes'),
     path('hr/export/app/<int:pk>', views.hr_export_applications, name='hr_export_applications'),
     path('hr/export/emp/<int:pk>', views.hr_export_apps_emp, name='hr_export_apps_emp'),
 

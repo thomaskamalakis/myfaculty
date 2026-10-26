@@ -52,6 +52,20 @@ services:
     networks:
       - vmprod
 
+  mcp:
+    build: ./mcp_server
+    ports:
+      - "127.0.0.1:8765:8765"
+    environment:
+      - MYFACULTY_API_URL=http://web:8000
+      # Django only accepts hosts from ALLOWED_HOSTS, so we send one of them
+      - MYFACULTY_API_HOST=localhost
+      - MCP_MODE=${MCP_MODE:-OFF}
+    depends_on:
+      - web
+    networks:
+      - vmprod
+
 networks:
   vmprod:
     name: vmprod

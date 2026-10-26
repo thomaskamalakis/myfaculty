@@ -125,27 +125,17 @@ class ApplicationForm(HrForm):
         if start_date > now:
             self.add_error( 'start_date', _('Δεν μπορείτε να καταχωρήσετε μελλονική ημερομηνία') )
 
-        print(end_date, now)
-        if end_date > now:
-            self.add_error( 'end_date', _('Δεν μπορείτε να καταχωρήσετε μελλονική ημερομηνία') )
-
         if start_date > end_date:
             self.add_error( 'start_date', _('H ημερομηνία έναρξης δεν μπορεί να είναι μεγαλύτερη από την ημερομηνία λήξης') )
       
         if self.employee:
             if self.employee.date_hired:
                 date_hired = self.employee.date_hired
-                print(date_hired)
                 if start_date > date_hired:
                     msg = _("Η ημερομηνία έναρξης δεν μπορεί να υπερβαίνει την ημερομηνία πρόσληψης %(date)s") % {
                         "date" : date_hired.strftime("%d/%m/%Y")
                     }
                     self.add_error( 'start_date', msg )
-                if end_date > date_hired:
-                    msg = _("Η ημερομηνία λήξης δεν μπορεί να υπερβαίνει την ημερομηνία πρόσληψης %(date)s") % {
-                        "date" : date_hired.strftime("%d/%m/%Y")
-                    }
-                    self.add_error( 'end_date', msg )
                 
         return cleaned_data
 

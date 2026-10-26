@@ -23,6 +23,7 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
 from export.utils import xlsx_response
 from hrms import import_apps
+from hrms.recognition_report import render_report
 from django.contrib import messages
 from django.http import HttpResponseBadRequest
 from django.utils.http import url_has_allowed_host_and_scheme
@@ -812,6 +813,18 @@ def hr_export_decision_ints(request, pk):
     wb.save(response)
 
     return response
+
+@login_required
+@user_passes_test(is_hr_user)
+def hr_export_decision_minutes(request, pk):
+    decision = get_object_or_404(Decision, pk=pk)
+    filename = f'recognition_minutes_{decision.employee.surname()}_{decision.date or decision.pk}.docx'
+    return FileResponse(
+        render_report(decision),
+        as_attachment=True,
+        filename=filename,
+        content_type='application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    )
 
 @login_required
 @user_passes_test(is_hr_user)

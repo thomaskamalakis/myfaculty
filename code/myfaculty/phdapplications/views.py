@@ -50,11 +50,13 @@ def dashboard(request):
     
     applications_draft = Application.objects.filter(
         status = Application.DRAFT, 
-        applicant = applicant)
+        applicant = applicant,
+        call__isnull = False)
     
     applications_submitted = Application.objects.filter(
         status = Application.SUBMITTED,
-        applicant = applicant)
+        applicant = applicant,
+        call__isnull = False)
     
     tables = [
          Table( 
@@ -116,7 +118,7 @@ def dashboard(request):
 def list_contacts(request, app_pk):
     template_name = 'phdapplications/candidate_app_rc.html'
     applicant = get_object_or_404(Applicant, user=request.user)
-    application = get_object_or_404(Application, pk = app_pk, applicant = applicant)
+    application = get_object_or_404(Application, pk = app_pk, applicant = applicant, call__isnull = False)
     
     tables = [
         Table(
@@ -153,7 +155,8 @@ class ApplicantCreate(GenericCreateView):
                                       user = self.request.user)
         self.application = get_object_or_404(Application, 
                                              pk = self.kwargs['app_pk'],
-                                             applicant = applicant)
+                                             applicant = applicant,
+                                             call__isnull = False)
     def form_valid(self, form):
         form.instance.application = self.application
         return super().form_valid(form)
@@ -192,7 +195,7 @@ class update_pi(ApplicantUpdate):
     form_class = forms.CandidatePIFrom
 
     def get_success_url(self, *args, **kwargs):
-        application = get_object_or_404(Application, pi = self.object)
+        application = get_object_or_404(Application, pi = self.object, call__isnull = False)
         return reverse_lazy('phdapplications:apply', kwargs={'pk' : application.call.pk })
     
     def get_context_data(self, **kwargs):
@@ -256,7 +259,7 @@ def apply_extra_info(request, pk):
 
     template_name = 'phdapplications/candidate_app_extra.html'
     applicant = get_object_or_404(Applicant, user = request.user)
-    application = get_object_or_404(Application, applicant=applicant, pk=pk)
+    application = get_object_or_404(Application, applicant=applicant, pk=pk, call__isnull=False)
     
     tables = [
         Table(
@@ -393,7 +396,7 @@ class view_call(GenericUpdateView):
 def submit(request, pk):
     template_name = 'phdapplications/submit.html'
     applicant = get_object_or_404(Applicant, user = request.user)
-    application = get_object_or_404(Application, pk = pk, applicant = applicant)
+    application = get_object_or_404(Application, pk = pk, applicant = applicant, call__isnull = False)
     result = check_application(application)
     can_submit = application.applicant_can_submit()
     url = reverse_lazy('phdapplications:apply', kwargs = {'pk' : application.call.pk })

@@ -30,3 +30,5 @@ pypdf
 romanize
 django-imagekit
 openpyxl
+django-allauth[socialaccount]
+packaging

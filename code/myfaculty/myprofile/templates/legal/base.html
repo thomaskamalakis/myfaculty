@@ -1,0 +1,22 @@
+{% extends 'registration/base.html' %}
+{% load i18n %}
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="bg-white p-4 rounded shadow-sm">
+        <div class="text-end small mb-2">
+          <a href="?lang=el">Ελληνικά</a> | <a href="?lang=en">English</a>
+        </div>
+        {% block legal %}{% endblock %}
+        <hr>
+        <p class="small">
+          <a href="{% url 'privacy' %}">{% trans 'Πολιτική Απορρήτου' %}</a> |
+          <a href="{% url 'terms' %}">{% trans 'Όροι Χρήσης' %}</a> |
+          <a href="{% url 'login' %}">{% trans 'Επιστροφή στη σύνδεση' %}</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

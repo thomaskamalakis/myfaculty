@@ -11,4 +11,5 @@
     {{ form|crispy }}
     <button type="submit" class="btn btn-primary">{% trans 'Εγγραφή!' %}</button>
 </form>
+<p class="small mt-3">{% trans 'Με την εγγραφή σας αποδέχεστε τους' %} <a href="{% url 'terms' %}" target="_blank">{% trans 'Όρους Χρήσης' %}</a> {% trans 'και την' %} <a href="{% url 'privacy' %}" target="_blank">{% trans 'Πολιτική Απορρήτου' %}</a>.</p>
 {% endblock %}

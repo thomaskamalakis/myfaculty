@@ -154,3 +154,6 @@ code/myfaculty/mailer/auth/*.json
 *.csv
 *.key
 *.pem
+
+# Database dumps
+*.data

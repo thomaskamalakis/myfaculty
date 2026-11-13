@@ -287,10 +287,20 @@ class SecScopedPhDStudentAutoComplete(LoginRequiredMixin, UserPassesTestMixin, a
         return is_secreteriat(self.request.user)
 
 class StaffMemberAutocomplete(LoginRequiredMixin, UserPassesTestMixin, autocomplete.Select2QuerySetView):
-    def get_queryset(self):        
-        if self.q:
-            qs = StaffMember.objects.filter(display_name__contains=self.q) | StaffMember.objects.filter(display_name_en__contains=self.q)
-        return qs[:10]
+    def get_queryset(self):
+        from django.db.models import Q
+        q = (self.q or '').strip()
+        if not q:
+            return StaffMember.objects.none()
+        fields = ['given_name', 'surname', 'given_name_en', 'surname_en',
+                  'display_name', 'display_name_en', 'email']
+        qs = StaffMember.objects.all()
+        for word in q.split():
+            cond = Q()
+            for f in fields:
+                cond |= Q(**{f + '__icontains': word})
+            qs = qs.filter(cond)
+        return qs.order_by('surname', 'given_name')[:20]
     
     def test_func(self):
         return is_staff_member(self.request.user) or is_secreteriat(self.request.user) or is_student(self.request.user)

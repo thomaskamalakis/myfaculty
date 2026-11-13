@@ -645,6 +645,50 @@ msgstr "Register"
 msgid "Ξέχασα τον κωδικό μου"
 msgstr "I forgot my password"
 
+#: myprofile/templates/registration/login.html
+msgid "Σύνδεση με Google"
+msgstr "Sign in with Google"
+
+#: myfaculty/socialadapter.py
+msgid "Η Google δεν επιβεβαίωσε το email σας. Δεν είναι δυνατή η σύνδεση."
+msgstr "Google did not verify your email. Login is not possible."
+
+#: myfaculty/socialadapter.py
+msgid "Ο λογαριασμός σας είναι απενεργοποιημένος."
+msgstr "Your account is disabled."
+
+#: myfaculty/socialadapter.py
+msgid "Βρέθηκαν περισσότεροι από ένας λογαριασμοί με αυτό το email. Επικοινωνήστε με τη γραμματεία."
+msgstr "More than one account was found with this email. Please contact the secretariat."
+
+#: legal pages
+msgid "Πολιτική Απορρήτου"
+msgstr "Privacy Policy"
+
+#: legal pages
+msgid "Όροι Χρήσης"
+msgstr "Terms of Service"
+
+#: legal pages
+msgid "Επιστροφή στη σύνδεση"
+msgstr "Back to sign in"
+
+#: legal pages
+msgid "Με την εγγραφή σας αποδέχεστε τους"
+msgstr "By registering you accept the"
+
+#: legal pages
+msgid "και την"
+msgstr "and the"
+
+#: legal pages
+msgid "Όρους Χρήσης"
+msgstr "Terms of Service"
+
+#: myfaculty/socialadapter.py
+msgid "Η σύνδεση με Google δεν είναι ενεργή."
+msgstr "Google login is not active."
+
 #: myprofile/utils.py:27
 #, python-format
 msgid ""

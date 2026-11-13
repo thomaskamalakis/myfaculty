@@ -241,6 +241,10 @@ label {
   gap: 0.25rem;
 }
 
+.login-separator {
+  margin-top: 1.5rem;
+}
+
 .file-button {
   min-width: 200px;
   font-weight: bold;

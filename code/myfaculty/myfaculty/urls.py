@@ -20,6 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
 from core.views import media_download
+from myprofile.legal import LegalPage
 
 
 urlpatterns = [
@@ -28,6 +29,14 @@ urlpatterns = [
     # Deliberately outside i18n_patterns (unlike the old api/, which is
     # locale-prefixed) - apiv2 is a REST API, not a locale-aware UI.
     path('apiv2/', include('apiv2.urls')),
+    # Public legal pages (also given to Google's OAuth consent screen)
+    path('privacy/', LegalPage.as_view(template_name='legal/privacy.html'), name='privacy'),
+    path('terms/', LegalPage.as_view(template_name='legal/terms.html'), name='terms'),
+    # Google sign-in (not allauth.urls, which would shadow django.contrib.auth.urls).
+    # Outside i18n_patterns so the OAuth redirect URI is fixed:
+    # https://<host>/accounts/google/login/callback/
+    path("accounts/", include("allauth.socialaccount.providers.google.urls")),
+    path("accounts/", include("allauth.socialaccount.urls")),
 ]
 
 urlpatterns += i18n_patterns(

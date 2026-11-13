@@ -1,0 +1,73 @@
+{% extends 'legal/base.html' %}
+{% block title %}{% if LANGUAGE_CODE == 'en' %}Terms of Service{% else %}Όροι Χρήσης{% endif %}{% endblock %}
+{% block legal %}
+{% if LANGUAGE_CODE == 'en' %}
+<h2>Terms of Service</h2>
+<p class="text-muted">MyDepartment, Department of Informatics and Telematics, Harokopio University of Athens</p>
+
+<h4>1. Purpose</h4>
+<p>MyDepartment is an internal application of the Department of Informatics and Telematics of Harokopio University of Athens for managing the Department's academic and administrative operations. By signing in or registering you accept these terms.</p>
+
+<h4>2. Who may use it</h4>
+<p>The application is intended for authorised users: faculty, staff, associates and other persons the Department has registered. Having an account does not by itself grant access to all functions; access depends on your role.</p>
+
+<h4>3. Your account</h4>
+<ul>
+  <li>You must provide accurate information and keep it up to date.</li>
+  <li>You are responsible for the security of your account (university password, application password or Google account) and for activity under it. Do not share your credentials.</li>
+  <li>Notify <a href="mailto:admin@example.com">admin@example.com</a> immediately if you suspect unauthorised use.</li>
+</ul>
+
+<h4>4. Acceptable use</h4>
+<p>You must not attempt to access data or functions you are not authorised to use, disrupt or overload the service, upload unlawful or malicious content, or use the application for purposes other than the Department's activities. Data of other persons you access through the application may be used only for the purpose for which you have been given access.</p>
+
+<h4>5. Suspension</h4>
+<p>The Department may suspend or remove an account that is misused, is no longer needed, or whose holder no longer has a relationship with the Department.</p>
+
+<h4>6. Availability and liability</h4>
+<p>The service is provided as is. We aim for continuous availability but do not guarantee uninterrupted operation, and may change or discontinue features. To the extent permitted by law, the University is not liable for losses arising from temporary unavailability of the service.</p>
+
+<h4>7. Personal data</h4>
+<p>Personal data are processed as described in our <a href="{% url 'privacy' %}">Privacy Policy</a>.</p>
+
+<h4>8. Changes and governing law</h4>
+<p>We may update these terms; the current version is always available at this address. These terms are governed by Greek law.</p>
+
+<h4>9. Contact</h4>
+<p><a href="mailto:admin@example.com">admin@example.com</a></p>
+{% else %}
+<h2>Όροι Χρήσης</h2>
+<p class="text-muted">MyDepartment, Τμήμα Πληροφορικής και Τηλεματικής, Χαροκόπειο Πανεπιστήμιο</p>
+
+<h4>1. Σκοπός</h4>
+<p>Το MyDepartment είναι εσωτερική εφαρμογή του Τμήματος Πληροφορικής και Τηλεματικής του Χαροκοπείου Πανεπιστημίου για τη διαχείριση των ακαδημαϊκών και διοικητικών λειτουργιών του Τμήματος. Με τη σύνδεση ή την εγγραφή σας αποδέχεστε τους παρόντες όρους.</p>
+
+<h4>2. Ποιοι μπορούν να τη χρησιμοποιούν</h4>
+<p>Η εφαρμογή απευθύνεται σε εξουσιοδοτημένους χρήστες: μέλη ΔΕΠ, προσωπικό, συνεργάτες και άλλα πρόσωπα που έχουν καταχωρηθεί από το Τμήμα. Η κατοχή λογαριασμού δεν παρέχει από μόνη της πρόσβαση σε όλες τις λειτουργίες· η πρόσβαση εξαρτάται από τον ρόλο σας.</p>
+
+<h4>3. Ο λογαριασμός σας</h4>
+<ul>
+  <li>Οφείλετε να δίνετε ακριβή στοιχεία και να τα διατηρείτε ενημερωμένα.</li>
+  <li>Είστε υπεύθυνοι για την ασφάλεια του λογαριασμού σας (κωδικός Πανεπιστημίου, κωδικός εφαρμογής ή λογαριασμός Google) και για τη δραστηριότητα που γίνεται με αυτόν. Μην μοιράζεστε τα διαπιστευτήριά σας.</li>
+  <li>Ειδοποιήστε αμέσως το <a href="mailto:admin@example.com">admin@example.com</a> αν υποπτεύεστε μη εξουσιοδοτημένη χρήση.</li>
+</ul>
+
+<h4>4. Αποδεκτή χρήση</h4>
+<p>Απαγορεύεται η απόπειρα πρόσβασης σε δεδομένα ή λειτουργίες για τα οποία δεν έχετε εξουσιοδότηση, η διατάραξη ή υπερφόρτωση της υπηρεσίας, η μεταφόρτωση παράνομου ή κακόβουλου περιεχομένου και η χρήση της εφαρμογής για σκοπούς εκτός των δραστηριοτήτων του Τμήματος. Τα δεδομένα τρίτων στα οποία έχετε πρόσβαση μέσω της εφαρμογής μπορούν να χρησιμοποιούνται μόνο για τον σκοπό για τον οποίο σας δόθηκε η πρόσβαση.</p>
+
+<h4>5. Αναστολή</h4>
+<p>Το Τμήμα μπορεί να αναστείλει ή να διαγράψει λογαριασμό που χρησιμοποιείται καταχρηστικά, δεν χρειάζεται πλέον ή του οποίου ο κάτοχος δεν έχει πλέον σχέση με το Τμήμα.</p>
+
+<h4>6. Διαθεσιμότητα και ευθύνη</h4>
+<p>Η υπηρεσία παρέχεται «ως έχει». Επιδιώκουμε τη συνεχή διαθεσιμότητα, αλλά δεν εγγυόμαστε αδιάλειπτη λειτουργία και μπορεί να τροποποιήσουμε ή να διακόψουμε λειτουργίες. Στο μέτρο που επιτρέπεται από τον νόμο, το Πανεπιστήμιο δεν ευθύνεται για ζημίες από προσωρινή μη διαθεσιμότητα της υπηρεσίας.</p>
+
+<h4>7. Προσωπικά δεδομένα</h4>
+<p>Τα προσωπικά δεδομένα επεξεργάζονται όπως περιγράφεται στην <a href="{% url 'privacy' %}">Πολιτική Απορρήτου</a>.</p>
+
+<h4>8. Τροποποιήσεις και εφαρμοστέο δίκαιο</h4>
+<p>Μπορεί να τροποποιούμε τους παρόντες όρους· η τρέχουσα έκδοση είναι πάντα διαθέσιμη σε αυτή τη διεύθυνση. Οι όροι διέπονται από το ελληνικό δίκαιο.</p>
+
+<h4>9. Επικοινωνία</h4>
+<p><a href="mailto:admin@example.com">admin@example.com</a></p>
+{% endif %}
+{% endblock %}

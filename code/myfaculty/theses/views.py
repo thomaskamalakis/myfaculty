@@ -216,7 +216,7 @@ class sec_edit(UserPassesTestMixin, LoginRequiredMixin, generic.UpdateView):
         if next:
             return next
         else:
-            reverse_lazy('theses:sec_list')
+            return reverse_lazy('theses:sec_list')
 
     def test_func(self):
         return is_secreteriat(self.request.user)
@@ -231,7 +231,7 @@ class sec_create(UserPassesTestMixin, LoginRequiredMixin, generic.CreateView):
         if next:
             return next
         else:
-            reverse_lazy('theses:sec_list')
+            return reverse_lazy('theses:sec_list')
 
     def test_func(self):
         return is_secreteriat(self.request.user)

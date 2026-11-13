@@ -223,6 +223,7 @@ class CourseSerializer(serializers.ModelSerializer):
                  'hours_study', 
                  'hours_project', 
                  'hours_lab_prep',
+                 'active',
                  ]
 
 class PhDThesisSerializer(serializers.ModelSerializer):

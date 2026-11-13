@@ -67,6 +67,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
     'crispy_forms',
     'crispy_bootstrap5',
     'rest_framework',
@@ -104,8 +109,10 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'myprofile.middleware.GoogleLoginGuardMiddleware',
     'myprofile.middleware.DevServerMiddleware',
     'myprofile.middleware.UserActivityMiddleware',
 ]
@@ -123,6 +130,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'myprofile.context_processors.google_login',
             ],
         },
     },
@@ -155,14 +163,47 @@ if os.environ.get('AUTH_LDAP_SERVER_URI'):
         "django_auth_ldap.backend.LDAPBackend",
         "myfaculty.auth.CustomAuthBackend",
         "django.contrib.auth.backends.ModelBackend",
+        "allauth.account.auth_backends.AuthenticationBackend",
     ]
 else:
     AUTHENTICATION_BACKENDS = [
         "myfaculty.auth.CustomAuthBackend",
         "django.contrib.auth.backends.ModelBackend",
+        "allauth.account.auth_backends.AuthenticationBackend",
     ]
 
 LOGIN_REDIRECT_URL='/'
+
+# Sign in with Google (django-allauth, social login only; it is an ALTERNATIVE
+# to the LDAP / email+password login, which stay unchanged).
+# Credentials come from the environment; if missing the Google button is hidden.
+SITE_ID = 1
+GOOGLE_OAUTH_CLIENT_ID = os.environ.get('GOOGLE_OAUTH_CLIENT_ID', '')
+GOOGLE_OAUTH_SECRET = os.environ.get('GOOGLE_OAUTH_SECRET', '')
+# Master switch (env GOOGLE_LOGIN_ACTIVE=True). When False the whole Google flow
+# is off: no button, /accounts/google/* answers 404, social logins are refused.
+GOOGLE_LOGIN_ACTIVE = os.environ.get('GOOGLE_LOGIN_ACTIVE') == 'True'
+GOOGLE_LOGIN_ENABLED = GOOGLE_LOGIN_ACTIVE and bool(GOOGLE_OAUTH_CLIENT_ID and GOOGLE_OAUTH_SECRET)
+SOCIALACCOUNT_ADAPTER = 'myfaculty.socialadapter.GoogleAdapter'
+SOCIALACCOUNT_LOGIN_ON_GET = True       # straight redirect to Google, no intermediate page
+SOCIALACCOUNT_AUTO_SIGNUP = True
+SOCIALACCOUNT_EMAIL_AUTHENTICATION = False  # linking to existing users is done by our adapter
+SOCIALACCOUNT_EMAIL_VERIFICATION = 'none'   # Google already verified the email
+ACCOUNT_EMAIL_VERIFICATION = 'none'
+# The TLS-terminating proxy in front of the app does not pass X-Forwarded-Proto,
+# so Django sees http. Google requires the https redirect URI.
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        'SCOPE': ['profile', 'email'],
+        'AUTH_PARAMS': {'prompt': 'select_account'},
+        'APPS': [{
+            'client_id': GOOGLE_OAUTH_CLIENT_ID,
+            'secret': GOOGLE_OAUTH_SECRET,
+            'key': '',
+        }] if GOOGLE_LOGIN_ENABLED else [],
+    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/

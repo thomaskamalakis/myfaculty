@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.http import Http404
 import logging
 import time
 
@@ -34,3 +35,17 @@ class UserActivityMiddleware:
             )
 
         return response
+
+
+class GoogleLoginGuardMiddleware:
+    """
+    When GOOGLE_LOGIN_ENABLED is False (GOOGLE_LOGIN_ACTIVE off or no credentials)
+    the Google sign-in endpoints do not exist.
+    """
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        if request.path.startswith('/accounts/google/') and not settings.GOOGLE_LOGIN_ENABLED:
+            raise Http404('Google login is not active')
+        return self.get_response(request)
